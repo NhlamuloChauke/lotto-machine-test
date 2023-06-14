@@ -1,31 +1,25 @@
-package com.example.lottomachinetest.model;
-
+package com.example.lottomachinetest.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
-@Table
+
+@Table(name = "`change`")
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LottoTicket {
+public class Change {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Lotto lotto;
-
-    @ElementCollection
-    private List<Integer> selections;
-
-    @ElementCollection
-    private List<Integer> result;
+    private int denomination;
+    private int quantity;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

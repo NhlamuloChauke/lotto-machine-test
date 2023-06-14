@@ -1,11 +1,10 @@
 package com.example.lottomachinetest.service.implementation;
 
 import com.example.lottomachinetest.exception.InvalidAmountException;
-import com.example.lottomachinetest.model.Change;
-import com.example.lottomachinetest.model.Lotto;
-import com.example.lottomachinetest.model.LottoTicket;
+import com.example.lottomachinetest.entity.Change;
+import com.example.lottomachinetest.entity.Lotto;
+import com.example.lottomachinetest.entity.LottoTicket;
 import com.example.lottomachinetest.service.LottoMachineService;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

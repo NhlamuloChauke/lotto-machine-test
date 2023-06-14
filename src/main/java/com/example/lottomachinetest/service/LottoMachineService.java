@@ -1,8 +1,8 @@
 package com.example.lottomachinetest.service;
 
-import com.example.lottomachinetest.model.Lotto;
-import com.example.lottomachinetest.model.LottoTicket;
-import com.example.lottomachinetest.model.Change;
+import com.example.lottomachinetest.entity.Lotto;
+import com.example.lottomachinetest.entity.LottoTicket;
+import com.example.lottomachinetest.entity.Change;
 import com.example.lottomachinetest.exception.InvalidAmountException;
 
 import java.math.BigDecimal;
