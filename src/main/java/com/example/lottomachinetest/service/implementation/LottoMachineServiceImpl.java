@@ -14,6 +14,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class LottoMachineServiceImpl implements LottoMachineService {
+
     @Override
     public void addFunds(BigDecimal amount) throws InvalidAmountException {
 

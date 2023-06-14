@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.util.List;
 
 @Table
@@ -19,6 +20,8 @@ public class User {
     private Long id;
 
     private String name;
+
+    private BigInteger balance;
 
     @OneToMany(mappedBy = "user")
     private List<LottoTicket> lottoTickets;
