@@ -1,13 +1,10 @@
 package com.example.lottomachinetest.dto;
 
 import com.example.lottomachinetest.entity.Lotto;
-import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-@Data
-public class PlaceSingleLottoBetRequest {
+public class placeQuickFiveBetRequest {
     private Lotto lotto;
     private List<Integer> selections;
 }

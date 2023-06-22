@@ -87,6 +87,21 @@ public class LottoMachineImpl implements LottoMachine {
     }
 
     @Override
+    public void placeQuickFiveBet(Lotto lotto, List<List<Integer>> selections) {
+        BigDecimal betAmount = BigDecimal.valueOf(25);
+        if(getBalance().compareTo(betAmount) >= 0) {
+            for (List<Integer> selection : selections) {
+                LottoTicket ticket = new LottoTicket(lotto, betAmount);
+                ticket.setSelections(selection);
+                lottoTicketRepository.save(ticket);
+                subtractBalance(betAmount);
+            }
+        } else {
+            throw new InsufficientFundsException("Insufficient funds to place the bet.");
+        }
+    }
+
+    @Override
     public void cancelTicket() {
         LottoTicket lastTicket = lottoTicketRepository.findTopByOrderByIdDesc();
         if (lastTicket != null) {
