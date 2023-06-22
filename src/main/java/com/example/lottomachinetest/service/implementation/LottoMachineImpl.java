@@ -198,10 +198,8 @@ public class LottoMachineImpl implements LottoMachine {
             BigDecimal denomination = new BigDecimal(change.getDenomination().substring(1));
             int quantity = change.getQuantity();
 
-            // Calculate the maximum number of bills to use for the current denomination
             int numBillsToUse = remainingAmount.divideToIntegralValue(denomination).intValue();
 
-            // Calculate the actual number of bills to use based on available quantity
             int numBillsUsed = Math.min(numBillsToUse, quantity);
 
             // Calculate the amount to be subtracted based on the number of bills used
