@@ -19,6 +19,7 @@ public interface LottoMachine {
     public BigDecimal getWinnings();
     public List<LottoTicket> getTickets();
     public List<Change> withdrawFunds();
+    public BigDecimal getBalance();
 
     /**
     public void placeRandomLottoBet(Lotto lotto);

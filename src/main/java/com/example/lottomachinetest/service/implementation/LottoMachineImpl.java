@@ -3,6 +3,7 @@ package com.example.lottomachinetest.service.implementation;
 import com.example.lottomachinetest.entity.Change;
 import com.example.lottomachinetest.entity.Lotto;
 import com.example.lottomachinetest.entity.LottoTicket;
+import com.example.lottomachinetest.exception.InsufficientFundsException;
 import com.example.lottomachinetest.exception.InvalidAmountException;
 import com.example.lottomachinetest.repository.ChangeRepository;
 import com.example.lottomachinetest.repository.LottoRepository;
@@ -48,11 +49,25 @@ public class LottoMachineImpl implements LottoMachine {
     public void placeSingleLottoBet(Lotto lotto, List<Integer> selections) {
         lottoRepository.save(lotto); // Save the Lotto instance before creating LottoTicket
 
-        LottoTicket ticket = new LottoTicket(lotto, BigDecimal.valueOf(5));
-        ticket.setSelections(selections);
-        lottoTicketRepository.save(ticket);
-        subtractBalance(BigDecimal.valueOf(5));
-    }
+        BigDecimal betAmount = BigDecimal.valueOf(5);
+        if (getBalance().compareTo(betAmount) >= 0) {
+            LottoTicket ticket = new LottoTicket(lotto, betAmount);
+            ticket.setSelections(selections);
+            lottoTicketRepository.save(ticket);
+            subtractBalance(betAmount);
+
+            BigDecimal denomination = betAmount.negate(); // Subtract the cost from balance
+            Change change = changeRepository.findByDenomination("R" + denomination.intValue());
+            if (change != null) {
+                change.setQuantity(change.getQuantity() + 1);
+            } else {
+                change = new Change("R" + denomination.intValue(), 1);
+            }
+            changeRepository.save(change);
+        } else {
+            throw new InsufficientFundsException("Insufficient funds to place the bet.");
+        }
+     }
 
     @Override
     public void cancelTicket() {
@@ -110,6 +125,18 @@ public class LottoMachineImpl implements LottoMachine {
         List<Change> changes = changeRepository.findAll();
         changeRepository.deleteAll();
         return changes;
+    }
+
+    @Override
+    public BigDecimal getBalance() {
+        BigDecimal balance = BigDecimal.ZERO;
+        List<Change> changes = changeRepository.findAll();
+        for (Change change : changes) {
+            BigDecimal denomination = new BigDecimal(change.getDenomination().substring(1));
+            BigDecimal totalAmount = denomination.multiply(BigDecimal.valueOf(change.getQuantity()));
+            balance = balance.add(totalAmount);
+        }
+        return balance;
     }
 
     private void addBalance(BigDecimal amount) {
