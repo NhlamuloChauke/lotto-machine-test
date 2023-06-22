@@ -1,5 +1,6 @@
 package com.example.lottomachinetest.controller;
 
+import com.example.lottomachinetest.dto.PlaceQuickFiveBetRequest;
 import com.example.lottomachinetest.dto.PlaceSingleLottoBetRequest;
 import com.example.lottomachinetest.entity.Change;
 import com.example.lottomachinetest.entity.Lotto;
@@ -44,9 +45,22 @@ public class LottoController {
     @PostMapping("/random-bet")
     public ResponseEntity<String> placeRandomLottoBet(@RequestBody Lotto lotto) {
         try {
-           // Lotto lotto = new Lotto(); // Create your Lotto instance here
             lottoService.placeRandomLottoBet(lotto);
             return ResponseEntity.ok("Lotto bet placed successfully.");
+        } catch (InsufficientFundsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+    }
+
+    @PostMapping("/quick-five-bet")
+    public ResponseEntity<String> placeQuickFiveBet(@RequestBody PlaceQuickFiveBetRequest request) {
+        try {
+            Lotto lotto = request.getLotto();
+            List<List<Integer>> selections = request.getSelections();
+            lottoService.placeQuickFiveBet(lotto, selections);
+            return ResponseEntity.ok("Quick five bet placed successfully.");
         } catch (InsufficientFundsException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
