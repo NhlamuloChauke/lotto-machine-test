@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/lotto")
@@ -44,5 +45,10 @@ public class LottoController {
     @GetMapping("/print-ticket")
     public String printTicket() {
         return lottoService.printTicket();
+    }
+
+    @PostMapping("/result-ticket")
+    public void resultTicket(@RequestBody List<Integer> numbers) {
+        lottoService.resultTicket(numbers);
     }
 }

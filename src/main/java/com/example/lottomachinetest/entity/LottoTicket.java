@@ -30,8 +30,35 @@ public class LottoTicket {
     @Column(name = "selection")
     private List<Integer> selections;
 
+    @Column(name = "winnings")
+    private BigDecimal winnings;
+
     public LottoTicket(Lotto lotto, BigDecimal cost) {
         this.lotto = lotto;
         this.cost = cost;
+    }
+
+    public BigDecimal calculateWinnings(List<Integer> numbers) {
+        int matchingNumbers = 0;
+        for (Integer selection : selections) {
+            if (numbers.contains(selection)) {
+                matchingNumbers++;
+            }
+        }
+
+        BigDecimal winnings = BigDecimal.ZERO;
+
+        // Define your rules for calculating the winnings based on the number of matching numbers
+        if (matchingNumbers == 3) {
+            winnings = BigDecimal.valueOf(100);
+        } else if (matchingNumbers == 4) {
+            winnings = BigDecimal.valueOf(1000);
+        } else if (matchingNumbers == 5) {
+            winnings = BigDecimal.valueOf(10000);
+        } else if (matchingNumbers == 6) {
+            winnings = BigDecimal.valueOf(1000000);
+        }
+
+        return winnings;
     }
 }
