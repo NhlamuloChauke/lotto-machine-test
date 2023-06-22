@@ -51,4 +51,15 @@ public class LottoController {
     public void resultTicket(@RequestBody List<Integer> numbers) {
         lottoService.resultTicket(numbers);
     }
+
+    @GetMapping("/balance")
+    public BigDecimal getBalance() {
+        return lottoService.getFundBalance();
+    }
+
+    @GetMapping("/winnings")
+    public BigDecimal getWinnings() {
+        return lottoService.getWinnings();
+    }
+
 }

@@ -16,13 +16,15 @@ public interface LottoMachine {
     public void cancelTicket();
     public String printTicket();
     public void resultTicket(List<Integer> numbers);
+    public BigDecimal getFundBalance();
+    public BigDecimal getWinnings();
 
 
     /**
     public void placeRandomLottoBet(Lotto lotto);
     public void placeQuickFiveBet(Lotto lotto, List<List<Integer>> selections);
     public void placeRandomFiveBet(Lotto lotto);
-    public BigDecimal getBalance();
+
     public List<LottoTicket> getTickets();
     public List<Change> withdrawFunds();**/
 
