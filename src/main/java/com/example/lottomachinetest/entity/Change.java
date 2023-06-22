@@ -1,16 +1,14 @@
 package com.example.lottomachinetest.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Table
 @NoArgsConstructor
 @AllArgsConstructor
-@Table
+@Data
 public class Change {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,4 +17,9 @@ public class Change {
     private String denomination;
     @Column
     private int quantity;
+
+    public Change(String denomination, int quantity) {
+        this.denomination = denomination;
+        this.quantity = quantity;
+    }
 }

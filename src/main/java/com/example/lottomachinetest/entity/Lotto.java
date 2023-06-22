@@ -15,7 +15,19 @@ public class Lotto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
     private String name;
-    private int numberOfBalls;
-    private int ballsToDraw;
+
+    @Column(name = "numbers_to_draw")
+    private Integer numbersToDraw;
+
+    @Column(name = "total_numbers")
+    private Integer totalNumbers;
+
+    public Lotto(String name, int numbersToDraw, int totalNumbers) {
+        this.name = name;
+        this.numbersToDraw = numbersToDraw;
+        this.totalNumbers = totalNumbers;
+    }
 }
