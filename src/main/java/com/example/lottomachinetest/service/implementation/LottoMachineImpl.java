@@ -12,6 +12,8 @@ import com.example.lottomachinetest.service.LottoMachine;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import javax.transaction.Transactional;
 
@@ -63,19 +65,26 @@ public class LottoMachineImpl implements LottoMachine {
             ticket.setSelections(selections);
             lottoTicketRepository.save(ticket);
             subtractBalance(betAmount);
-
-            BigDecimal denomination = betAmount.negate(); // Subtract the cost from balance
-            Change change = changeRepository.findByDenomination("R" + denomination.intValue());
-            if (change != null) {
-                change.setQuantity(change.getQuantity());
-            } else {
-                change = new Change("R" + denomination.intValue(), 1);
-            }
-            changeRepository.save(change);
         } else {
             throw new InsufficientFundsException("Insufficient funds to place the bet.");
         }
      }
+
+    @Override
+    public void placeRandomLottoBet(Lotto lotto) {
+        lottoRepository.save(lotto); // Save the Lotto instance before creating LottoTicket
+        BigDecimal betAmount = BigDecimal.valueOf(5);
+        if (getBalance().compareTo(betAmount) >= 0) {
+            List<Integer> selections = generateRandomSelections(lotto.getNumbersToDraw(), lotto.getTotalNumbers());
+            LottoTicket ticket = new LottoTicket(lotto, betAmount);
+            ticket.setSelections(selections);
+            lottoTicketRepository.save(ticket);
+            subtractBalance(betAmount);
+        }
+        else {
+            throw new InsufficientFundsException("Insufficient funds to place the bet.");
+        }
+    }
 
     @Override
     public void cancelTicket() {
@@ -147,6 +156,15 @@ public class LottoMachineImpl implements LottoMachine {
         return balance;
     }
 
+    private List<Integer> generateRandomSelections(int numbersToDraw, int totalNumbers) {
+        List<Integer> selections = new ArrayList<>();
+        for (int i = 1; i <= numbersToDraw; i++) {
+            int number = (int) (Math.random() * totalNumbers) + 1;
+            selections.add(number);
+        }
+        return selections;
+    }
+
     private void addBalance(BigDecimal amount) {
         List<Change> changes = changeRepository.findAll();
         BigDecimal remainingAmount = amount;
@@ -164,17 +182,38 @@ public class LottoMachineImpl implements LottoMachine {
     }
 
     private void subtractBalance(BigDecimal amount) {
+
         List<Change> changes = changeRepository.findAll();
         BigDecimal remainingAmount = amount;
+
+        // Sort the changes in descending order by denomination value
+       // changes.sort(Comparator.comparing(change -> new BigDecimal(change.getDenomination().substring(1))).reversed());
+        changes.sort((change1, change2) -> {
+            BigDecimal denomination1 = new BigDecimal(change1.getDenomination().substring(1));
+            BigDecimal denomination2 = new BigDecimal(change2.getDenomination().substring(1));
+            return denomination2.compareTo(denomination1);
+        });
+
         for (Change change : changes) {
             BigDecimal denomination = new BigDecimal(change.getDenomination().substring(1));
             int quantity = change.getQuantity();
+
+            // Calculate the maximum number of bills to use for the current denomination
             int numBillsToUse = remainingAmount.divideToIntegralValue(denomination).intValue();
+
+            // Calculate the actual number of bills to use based on available quantity
             int numBillsUsed = Math.min(numBillsToUse, quantity);
+
+            // Calculate the amount to be subtracted based on the number of bills used
             BigDecimal amountUsed = denomination.multiply(BigDecimal.valueOf(numBillsUsed));
+
+            // Update the quantity and save the change
             change.setQuantity(quantity - numBillsUsed);
             changeRepository.save(change);
+
+            // Subtract the used amount from the remaining amount
             remainingAmount = remainingAmount.subtract(amountUsed);
+
             if (remainingAmount.compareTo(BigDecimal.ZERO) == 0) {
                 break;
             }

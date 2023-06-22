@@ -2,7 +2,9 @@ package com.example.lottomachinetest.controller;
 
 import com.example.lottomachinetest.dto.PlaceSingleLottoBetRequest;
 import com.example.lottomachinetest.entity.Change;
+import com.example.lottomachinetest.entity.Lotto;
 import com.example.lottomachinetest.entity.LottoTicket;
+import com.example.lottomachinetest.exception.InsufficientFundsException;
 import com.example.lottomachinetest.exception.InvalidAmountException;
 import com.example.lottomachinetest.service.LottoMachine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,19 @@ public class LottoController {
         lottoService.placeSingleLottoBet(request.getLotto(), request.getSelections());
     }
 
+    @PostMapping("/random-bet")
+    public ResponseEntity<String> placeRandomLottoBet(@RequestBody Lotto lotto) {
+        try {
+           // Lotto lotto = new Lotto(); // Create your Lotto instance here
+            lottoService.placeRandomLottoBet(lotto);
+            return ResponseEntity.ok("Lotto bet placed successfully.");
+        } catch (InsufficientFundsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+    }
+
     @DeleteMapping("/cancel-ticket")
     public void cancelTicket() {
         lottoService.cancelTicket();
@@ -56,6 +71,11 @@ public class LottoController {
     @GetMapping("/balance-winnings")
     public BigDecimal getWinnings() {
         return lottoService.getWinnings();
+    }
+
+    @GetMapping("/balance-fund")
+    public BigDecimal getBalance() {
+        return lottoService.getBalance();
     }
 
     @GetMapping("/tickets")
