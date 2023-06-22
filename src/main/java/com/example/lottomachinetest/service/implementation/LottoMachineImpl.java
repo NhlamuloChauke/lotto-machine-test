@@ -64,6 +64,16 @@ public class LottoMachineImpl implements LottoMachine {
 
     }
 
+    @Override
+    public String printTicket() {
+        List<LottoTicket> tickets = lottoTicketRepository.findAll();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (LottoTicket ticket : tickets) {
+            stringBuilder.append(ticket.toString()).append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
     private void addBalance(BigDecimal amount) {
         List<Change> changes = changeRepository.findAll();
         BigDecimal remainingAmount = amount;

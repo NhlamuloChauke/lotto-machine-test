@@ -40,4 +40,9 @@ public class LottoController {
     public void cancelTicket() {
         lottoService.cancelTicket();
     }
+
+    @GetMapping("/print-ticket")
+    public String printTicket() {
+        return lottoService.printTicket();
+    }
 }
