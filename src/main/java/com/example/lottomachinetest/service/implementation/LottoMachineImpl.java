@@ -55,8 +55,9 @@ public class LottoMachineImpl implements LottoMachine {
     }
 
     @Override
-    public void placeSingleLottoBet(Lotto lotto, List<Integer> selections, BigDecimal betAmount) {
+    public void placeSingleLottoBet(Lotto lotto, List<Integer> selections) {
         lottoRepository.save(lotto); // Save the Lotto instance before creating LottoTicket
+        BigDecimal betAmount = BigDecimal.valueOf(5);
         if (getBalance().compareTo(betAmount) >= 0) {
             LottoTicket ticket = new LottoTicket(lotto, betAmount);
             ticket.setSelections(selections);
@@ -66,7 +67,7 @@ public class LottoMachineImpl implements LottoMachine {
             BigDecimal denomination = betAmount.negate(); // Subtract the cost from balance
             Change change = changeRepository.findByDenomination("R" + denomination.intValue());
             if (change != null) {
-                change.setQuantity(change.getQuantity() + 1);
+                change.setQuantity(change.getQuantity());
             } else {
                 change = new Change("R" + denomination.intValue(), 1);
             }

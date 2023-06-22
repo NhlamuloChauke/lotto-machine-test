@@ -36,7 +36,7 @@ public class LottoController {
 
     @PostMapping("/place-single-bet")
     public void placeSingleLottoBet(@RequestBody PlaceSingleLottoBetRequest request) {
-        lottoService.placeSingleLottoBet(request.getLotto(), request.getSelections(),  request.getAmount());
+        lottoService.placeSingleLottoBet(request.getLotto(), request.getSelections());
     }
 
     @DeleteMapping("/cancel-ticket")
