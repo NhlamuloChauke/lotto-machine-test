@@ -1,6 +1,8 @@
 package com.example.lottomachinetest.controller;
 
 import com.example.lottomachinetest.dto.PlaceSingleLottoBetRequest;
+import com.example.lottomachinetest.entity.Change;
+import com.example.lottomachinetest.entity.LottoTicket;
 import com.example.lottomachinetest.exception.InvalidAmountException;
 import com.example.lottomachinetest.service.LottoMachine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,15 +53,20 @@ public class LottoController {
     public void resultTicket(@RequestBody List<Integer> numbers) {
         lottoService.resultTicket(numbers);
     }
-
-    @GetMapping("/balance")
-    public BigDecimal getBalance() {
-        return lottoService.getFundBalance();
-    }
-
-    @GetMapping("/winnings")
+    @GetMapping("/balance-winnings")
     public BigDecimal getWinnings() {
         return lottoService.getWinnings();
+    }
+
+    @GetMapping("/tickets")
+    public List<LottoTicket> getTickets() {
+        return lottoService.getTickets();
+    }
+
+    @GetMapping("/withdraw")
+    public ResponseEntity<List<Change>> withdrawFunds() {
+        List<Change> changes = lottoService.withdrawFunds();
+        return ResponseEntity.ok(changes);
     }
 
 }

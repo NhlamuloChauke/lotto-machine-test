@@ -88,18 +88,6 @@ public class LottoMachineImpl implements LottoMachine {
     }
 
     @Override
-    public BigDecimal getFundBalance() {
-        BigDecimal balance = BigDecimal.ZERO;
-        List<Change> changes = changeRepository.findAll();
-        for (Change change : changes) {
-            BigDecimal denomination = new BigDecimal(change.getDenomination().substring(1));
-            BigDecimal totalAmount = denomination.multiply(BigDecimal.valueOf(change.getQuantity()));
-            balance = balance.add(totalAmount);
-        }
-        return balance;
-    }
-
-    @Override
     public BigDecimal getWinnings() {
         BigDecimal totalWinnings = BigDecimal.ZERO;
         List<LottoTicket> tickets = lottoTicketRepository.findAll();
@@ -110,6 +98,18 @@ public class LottoMachineImpl implements LottoMachine {
             }
         }
         return totalWinnings;
+    }
+
+    @Override
+    public List<LottoTicket> getTickets() {
+        return lottoTicketRepository.findAll();
+    }
+
+    @Override
+    public List<Change> withdrawFunds() {
+        List<Change> changes = changeRepository.findAll();
+        changeRepository.deleteAll();
+        return changes;
     }
 
     private void addBalance(BigDecimal amount) {
