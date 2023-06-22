@@ -13,12 +13,13 @@ public interface LottoMachine {
 
     public void addFunds(BigDecimal amount) throws InvalidAmountException;
     public void placeSingleLottoBet(Lotto lotto, List<Integer> selections);
+    public void cancelTicket();
 
     /**
     public void placeRandomLottoBet(Lotto lotto);
     public void placeQuickFiveBet(Lotto lotto, List<List<Integer>> selections);
     public void placeRandomFiveBet(Lotto lotto);
-    public void cancelTicket();
+
     public String printTicket();
     public void resultTicket(List<Integer> numbers);
     public BigDecimal getBalance();

@@ -54,6 +54,32 @@ public class LottoMachineImpl implements LottoMachine {
         subtractBalance(BigDecimal.valueOf(5));
     }
 
+    @Override
+    public void cancelTicket() {
+        LottoTicket lastTicket = lottoTicketRepository.findTopByOrderByIdDesc();
+        if (lastTicket != null) {
+            lottoTicketRepository.delete(lastTicket);
+            addBalance(lastTicket.getCost());
+        }
+
+    }
+
+    private void addBalance(BigDecimal amount) {
+        List<Change> changes = changeRepository.findAll();
+        BigDecimal remainingAmount = amount;
+        for (Change change : changes) {
+            BigDecimal denomination = new BigDecimal(change.getDenomination().substring(1));
+            int quantity = change.getQuantity();
+            int numBillsToAdd = remainingAmount.divideToIntegralValue(denomination).intValue();
+            change.setQuantity(quantity + numBillsToAdd);
+            changeRepository.save(change);
+            remainingAmount = remainingAmount.subtract(denomination.multiply(BigDecimal.valueOf(numBillsToAdd)));
+            if (remainingAmount.compareTo(BigDecimal.ZERO) == 0) {
+                break;
+            }
+        }
+    }
+
     private void subtractBalance(BigDecimal amount) {
         List<Change> changes = changeRepository.findAll();
         BigDecimal remainingAmount = amount;

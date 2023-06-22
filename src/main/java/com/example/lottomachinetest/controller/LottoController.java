@@ -1,7 +1,6 @@
 package com.example.lottomachinetest.controller;
 
-import com.example.lottomachinetest.entity.Lotto;
-import com.example.lottomachinetest.entity.PlaceSingleLottoBetRequest;
+import com.example.lottomachinetest.dto.PlaceSingleLottoBetRequest;
 import com.example.lottomachinetest.exception.InvalidAmountException;
 import com.example.lottomachinetest.service.LottoMachine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/lotto")
@@ -36,5 +34,10 @@ public class LottoController {
     @PostMapping("/place-single-bet")
     public void placeSingleLottoBet(@RequestBody PlaceSingleLottoBetRequest request) {
         lottoService.placeSingleLottoBet(request.getLotto(), request.getSelections());
+    }
+
+    @DeleteMapping("/cancel-ticket")
+    public void cancelTicket() {
+        lottoService.cancelTicket();
     }
 }
