@@ -36,20 +36,27 @@ public class LottoMachineImpl implements LottoMachine {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidAmountException("Invalid amount. Amount must be greater than zero.");
         }
-        Change change = changeRepository.findByDenomination("R" + amount.intValue());
-        if (change != null) {
-            change.setQuantity(change.getQuantity() + 1);
-        } else {
-            change = new Change("R" + amount.intValue(), 1);
+
+        BigDecimal remainingAmount = amount;
+        while (remainingAmount.compareTo(BigDecimal.ZERO) > 0) {
+            BigDecimal denomination = remainingAmount.min(BigDecimal.TEN);
+            String denominationString = "R" + denomination.intValue();
+
+            Change change = changeRepository.findByDenomination(denominationString);
+            if (change != null) {
+                change.setQuantity(change.getQuantity() + 1);
+            } else {
+                change = new Change(denominationString, 1);
+            }
+            changeRepository.save(change);
+
+            remainingAmount = remainingAmount.subtract(denomination);
         }
-        changeRepository.save(change);
     }
 
     @Override
-    public void placeSingleLottoBet(Lotto lotto, List<Integer> selections) {
+    public void placeSingleLottoBet(Lotto lotto, List<Integer> selections, BigDecimal betAmount) {
         lottoRepository.save(lotto); // Save the Lotto instance before creating LottoTicket
-
-        BigDecimal betAmount = BigDecimal.valueOf(5);
         if (getBalance().compareTo(betAmount) >= 0) {
             LottoTicket ticket = new LottoTicket(lotto, betAmount);
             ticket.setSelections(selections);

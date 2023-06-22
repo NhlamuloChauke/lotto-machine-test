@@ -12,7 +12,7 @@ import com.example.lottomachinetest.exception.InvalidAmountException;
 public interface LottoMachine {
 
     public void addFunds(BigDecimal amount) throws InvalidAmountException;
-    public void placeSingleLottoBet(Lotto lotto, List<Integer> selections);
+    public void placeSingleLottoBet(Lotto lotto, List<Integer> selections, BigDecimal betAmount);
     public void cancelTicket();
     public String printTicket();
     public void resultTicket(List<Integer> numbers);
