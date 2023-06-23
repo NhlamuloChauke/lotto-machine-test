@@ -1,0 +1,280 @@
+{
+	"info": {
+		"_postman_id": "3229d06c-b7e8-406a-85cc-334c899d7755",
+		"name": "lotto-machine-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "add-funds",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/lotto/add-funds?amount=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"lotto",
+						"add-funds"
+					],
+					"query": [
+						{
+							"key": "amount",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "single-bet",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"lotto\": {\n    \"name\": \"Lotto 6/49\",\n    \"numbersToDraw\": 6,\n    \"totalNumbers\": 49\n  },\n  \"selections\": [1, 2, 3, 4, 5, 6]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/lotto/place-single-bet",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"lotto",
+						"place-single-bet"
+					],
+					"query": [
+						{
+							"key": "betAmount",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cancel-ticket",
+			"request": {
+				"method": "POST",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "print-ticket",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/lotto/print-ticket",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"lotto",
+						"print-ticket"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "result-ticket",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "balance-winning",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/lotto/balance-fund\"",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"lotto",
+						"balance-fund\""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "balance-fund",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/lotto/balance-fund",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"lotto",
+						"balance-fund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tickets",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/lotto/tickets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"lotto",
+						"tickets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "withdraw",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/lotto/withdraw",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"lotto",
+						"withdraw"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "random-bet",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"numbersToDraw\": 5,\n  \"totalNumbers\": 50\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/lotto/random-bet",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"lotto",
+						"random-bet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "quick-five-bet",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"lotto\": {\n    \"id\": 1,\n    \"name\": \"Lotto 6/49\",\n    \"numbersToDraw\": 6,\n    \"totalNumbers\": 49\n  },\n  \"selections\": [\n    [1, 2, 3, 4, 5, 6],\n    [7, 8, 9, 10, 11, 12],\n    [13, 14, 15, 16, 17, 18],\n    [19, 20, 21, 22, 23, 24],\n    [25, 26, 27, 28, 29, 30]\n  ]\n}\n\n\n\n\n\n\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/lotto/quick-five-bet",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"lotto",
+						"quick-five-bet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "randomFiveBet",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 1,\n    \"name\": \"Lotto Game\",\n    \"numbersToDraw\": 6,\n    \"totalNumbers\": 49\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/lotto/randomFiveBet",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"lotto",
+						"randomFiveBet"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
