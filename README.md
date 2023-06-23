@@ -36,3 +36,12 @@ file named: lotto-machine-test.postman_collection.json
 To improve:
 
 - Error handling and optimise some calculations
+- Database Transactions: When dealing with database operations, 
+  it's important to ensure the proper use of transactions 
+  to maintain data integrity. Consider reviewing and verifying 
+  that database operations are appropriately wrapped in transactions 
+  to handle failures and rollbacks if needed.
+- Unit Testing: Implement unit tests to cover different scenarios 
+  and validate the correctness of the implementation. 
+  This will help identify any issues and ensure the desired behavior of the Lotto Machine.
+- Code organizations
