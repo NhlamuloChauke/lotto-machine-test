@@ -22,10 +22,8 @@ public interface LottoMachine {
     public BigDecimal getBalance();
     public void placeRandomLottoBet(Lotto lotto);
     public void placeQuickFiveBet(Lotto lotto, List<List<Integer>> selections);
-
-    /**
     public void placeRandomFiveBet(Lotto lotto);
-    **/
+
 
 }
 

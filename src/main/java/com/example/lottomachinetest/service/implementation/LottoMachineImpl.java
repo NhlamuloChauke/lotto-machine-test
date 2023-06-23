@@ -60,65 +60,113 @@ public class LottoMachineImpl implements LottoMachine {
         saveLotto(lotto); // Save the Lotto instance before creating LottoTicket
         BigDecimal betAmount = BigDecimal.valueOf(5);
         if (getBalance().compareTo(betAmount) >= 0) {
-            /**
-            LottoTicket ticket = new LottoTicket(lotto, betAmount);
-            ticket.setSelections(selections);
-            lottoTicketRepository.save(ticket);**/
             saveLottoTicket(lotto, selections, betAmount);
             subtractBalance(betAmount);
-
-            BigDecimal denomination = betAmount.negate(); // Subtract the cost from balance
-            Change change = changeRepository.findByDenomination("R" + denomination.intValue());
-            if (change != null) {
-                change.setQuantity(change.getQuantity());
-            } else {
-                change = new Change("R" + denomination.intValue(), 1);
-            }
-            changeRepository.save(change);
+            subtractChangeCostBalance(betAmount);
         } else {
             throw new InsufficientFundsException("Insufficient funds to place the bet.");
         }
      }
 
-    private void saveLottoTicket(Lotto lotto, List<Integer> selections, BigDecimal betAmount){
-        LottoTicket ticket = new LottoTicket(lotto, betAmount);
-        ticket.setSelections(selections);
-        lottoTicketRepository.save(ticket);
-    }
     @Override
     public void placeRandomLottoBet(Lotto lotto) {
         saveLotto(lotto); // Save the Lotto instance before creating LottoTicket
         BigDecimal betAmount = BigDecimal.valueOf(5);
         if (getBalance().compareTo(betAmount) >= 0) {
             List<Integer> selections = generateRandomSelections(lotto.getNumbersToDraw(), lotto.getTotalNumbers());
-            LottoTicket ticket = new LottoTicket(lotto, betAmount);
-            ticket.setSelections(selections);
-            lottoTicketRepository.save(ticket);
+            saveLottoTicket(lotto, selections, betAmount);
             subtractBalance(betAmount);
+            subtractChangeCostBalance(betAmount);
         }
         else {
             throw new InsufficientFundsException("Insufficient funds to place the bet.");
         }
     }
 
+
     @Override
     public void placeQuickFiveBet(Lotto lotto, List<List<Integer>> selections) {
-        saveLotto(lotto); // Save the Lotto instance before creating LottoTicket
+
+        Lotto savedLotto = saveForQuickFiveLotto(lotto); // Save the Lotto instance before creating LottoTicket
         BigDecimal betAmount = BigDecimal.valueOf(25);
         if(getBalance().compareTo(betAmount) >= 0) {
             for (List<Integer> selection : selections) {
-                LottoTicket ticket = new LottoTicket(lotto, betAmount);
+                LottoTicket ticket = new LottoTicket(savedLotto, betAmount);
                 ticket.setSelections(selection);
                 lottoTicketRepository.save(ticket);
-                subtractBalance(betAmount);
+                subtractQuickFiveBalance(betAmount); // Subtract the bet amount from the balance for each individual bet
+
             }
         } else {
             throw new InsufficientFundsException("Insufficient funds to place the bet.");
         }
     }
 
+    @Override
+    public void placeRandomFiveBet(Lotto lotto) {
+
+    }
+
+
+    private void subtractQuickFiveBalance(BigDecimal amount) {
+        List<Change> changes = changeRepository.findAll();
+        BigDecimal remainingAmount = amount;
+
+        // Sort the changes in descending order by denomination value
+        changes.sort((change1, change2) -> {
+            BigDecimal denomination1 = new BigDecimal(change1.getDenomination().substring(1));
+            BigDecimal denomination2 = new BigDecimal(change2.getDenomination().substring(1));
+            return denomination2.compareTo(denomination1);
+        });
+
+        for (Change change : changes) {
+            BigDecimal denomination = new BigDecimal(change.getDenomination().substring(1));
+            int quantity = change.getQuantity();
+
+            int numBillsToUse = remainingAmount.divideToIntegralValue(denomination).intValue();
+
+            int numBillsUsed = Math.min(numBillsToUse, quantity);
+
+            // Calculate the amount to be subtracted based on the number of bills used
+            BigDecimal amountUsed = denomination.multiply(BigDecimal.valueOf(numBillsUsed));
+
+            if (numBillsUsed > 0) {
+                // Update the quantity and save the change only if bills are used
+                change.setQuantity(quantity - numBillsUsed);
+                changeRepository.save(change);
+            }
+
+            // Subtract the used amount from the remaining amount
+            remainingAmount = remainingAmount.subtract(amountUsed);
+
+            if (remainingAmount.compareTo(BigDecimal.ZERO) <= 0) {
+                break;
+            }
+        }
+    }
+
+    private void subtractChangeCostBalance(BigDecimal betAmount){
+        BigDecimal denomination = betAmount.negate(); // Subtract the cost from balance
+        Change change = changeRepository.findByDenomination("R" + denomination.intValue());
+        if (change != null) {
+            change.setQuantity(change.getQuantity());
+        } else {
+            change = new Change("R" + denomination.intValue(), 1);
+        }
+        changeRepository.save(change);
+    }
+
+    private void saveLottoTicket(Lotto lotto, List<Integer> selections, BigDecimal betAmount){
+        LottoTicket ticket = new LottoTicket(lotto, betAmount);
+        ticket.setSelections(selections);
+        lottoTicketRepository.save(ticket);
+    }
     private void saveLotto(Lotto lotto) {
         lottoRepository.save(lotto);
+    }
+
+    private Lotto saveForQuickFiveLotto(Lotto lotto) {
+        return lottoRepository.save(lotto);
     }
 
     @Override
