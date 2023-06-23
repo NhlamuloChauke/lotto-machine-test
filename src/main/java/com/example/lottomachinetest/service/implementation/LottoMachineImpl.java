@@ -21,6 +21,9 @@ import javax.transaction.Transactional;
 @Transactional
 public class LottoMachineImpl implements LottoMachine {
 
+    private static final int FiveRand = 5;
+    private static final int TwentyFiveRand = 25;
+
     private final LottoTicketRepository lottoTicketRepository;
     private final ChangeRepository changeRepository;
     private final LottoRepository lottoRepository;
@@ -58,7 +61,7 @@ public class LottoMachineImpl implements LottoMachine {
     @Override
     public void placeSingleLottoBet(Lotto lotto, List<Integer> selections) {
         saveLotto(lotto); // Save the Lotto instance before creating LottoTicket
-        BigDecimal betAmount = BigDecimal.valueOf(5);
+        BigDecimal betAmount = BigDecimal.valueOf(FiveRand);
         if (getBalance().compareTo(betAmount) >= 0) {
             saveLottoTicket(lotto, selections, betAmount);
             subtractBalance(betAmount);
@@ -71,7 +74,7 @@ public class LottoMachineImpl implements LottoMachine {
     @Override
     public void placeRandomLottoBet(Lotto lotto) {
         saveLotto(lotto); // Save the Lotto instance before creating LottoTicket
-        BigDecimal betAmount = BigDecimal.valueOf(5);
+        BigDecimal betAmount = BigDecimal.valueOf(FiveRand);
         if (getBalance().compareTo(betAmount) >= 0) {
             List<Integer> selections = generateRandomSelections(lotto.getNumbersToDraw(), lotto.getTotalNumbers());
             saveLottoTicket(lotto, selections, betAmount);
@@ -88,7 +91,7 @@ public class LottoMachineImpl implements LottoMachine {
     public void placeQuickFiveBet(Lotto lotto, List<List<Integer>> selections) {
 
         Lotto savedLotto = saveForQuickFiveLotto(lotto); // Save the Lotto instance before creating LottoTicket
-        BigDecimal betAmount = BigDecimal.valueOf(25);
+        BigDecimal betAmount = BigDecimal.valueOf(TwentyFiveRand);
         if(getBalance().compareTo(betAmount) >= 0) {
             for (List<Integer> selection : selections) {
                 LottoTicket ticket = new LottoTicket(savedLotto, betAmount);
@@ -101,12 +104,17 @@ public class LottoMachineImpl implements LottoMachine {
             throw new InsufficientFundsException("Insufficient funds to place the bet.");
         }
     }
-
     @Override
     public void placeRandomFiveBet(Lotto lotto) {
-
+        saveLotto(lotto); // Save the Lotto instance before creating LottoTicket
+        for (int i = 0; i < 5; i++) {
+            List<Integer> selections = generateRandomSelections(lotto.getNumbersToDraw(), lotto.getTotalNumbers());
+            LottoTicket ticket = new LottoTicket(lotto, BigDecimal.valueOf(TwentyFiveRand));
+            ticket.setSelections(selections);
+            lottoTicketRepository.save(ticket);
+            subtractBalance(BigDecimal.valueOf(TwentyFiveRand));
+        }
     }
-
 
     private void subtractQuickFiveBalance(BigDecimal amount) {
         List<Change> changes = changeRepository.findAll();

@@ -103,4 +103,16 @@ public class LottoController {
         return ResponseEntity.ok(changes);
     }
 
+    @PostMapping("/randomFiveBet")
+    public ResponseEntity<String> placeRandomFiveBet(@RequestBody Lotto lotto) {
+        try {
+            lottoService.placeRandomFiveBet(lotto);
+            return ResponseEntity.ok("Random five bets placed successfully.");
+        } catch (InsufficientFundsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+    }
+
 }
