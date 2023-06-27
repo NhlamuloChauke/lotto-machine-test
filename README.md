@@ -9,10 +9,10 @@ and does not require a database.
 Technologies used
 ----------------
 
-- Java 11
+- Java
 - spring-boot
 - maven 
-- This services uses : H2 Memory Database
+- This service uses: H2 Memory Database
 - MySQL - a test as requested 
 - install postman
 
@@ -28,18 +28,18 @@ $ mvn spring-boot:run
 
 To test the service
 -----------------
-Please use the postman collection 
+Please use the Postman collection 
 
 
-file named: lotto-machine-test.postman_collection.json
+The file named: lotto-machine-test.postman_collection.json
 
 To improve:
 
-- Error handling and optimise some calculations
+- Error handling and optimize some calculations
 - Database Transactions: When dealing with database operations, 
   it's important to ensure the proper use of transactions 
   to maintain data integrity. Consider reviewing and verifying 
-  that database operations are appropriately wrapped in transactions 
+  that database operation are appropriately wrapped in transactions 
   to handle failures and rollbacks if needed.
 - Unit Testing: Implement unit tests to cover different scenarios 
   and validate the correctness of the implementation. 
